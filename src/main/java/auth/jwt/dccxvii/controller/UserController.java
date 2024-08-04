@@ -15,7 +15,6 @@ import auth.jwt.dccxvii.service.JwtService;
 import auth.jwt.dccxvii.service.UserInfoService;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -45,6 +44,14 @@ public class UserController {
 
     @GetMapping("/user/userProfile")
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+
+    public String userProfile() {
+        return "wELCOME TO USER Profile";
+    }
+
+    @GetMapping("/user/adminProfile")
+
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 
     public String adminProfile() {
@@ -53,11 +60,12 @@ public class UserController {
 
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword()));
-        if(authentication.isAuthenticated()){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
             return jwtService.generateToken(authRequest.getUsername());
 
-        }else{
+        } else {
             throw new UsernameNotFoundException("invalid user request!");
         }
     }

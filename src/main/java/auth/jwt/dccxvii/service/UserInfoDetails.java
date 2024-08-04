@@ -23,6 +23,8 @@ public class UserInfoDetails implements UserDetails {
         authoroties = Arrays.stream(userInfo.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+
+        System.out.println("name: " + name + " password: " + password + " authorities: " + authoroties);
     }
 
     @Override
